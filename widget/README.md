@@ -7,7 +7,7 @@ Shows what your [Music Assistant](https://www.music-assistant.io) players are pl
 Works with Music Assistant alone, no Home Assistant needed.
 
 > [!CAUTION]
-> With controls enabled (the default), the Music Assistant token is part of the page, because the browser sends the commands straight to Music Assistant. Anyone who can open your dashboard can read it. Use a dedicated **guest** user restricted to the players you show (step 1), keep Glance on your LAN or behind [Glance authentication](https://github.com/glanceapp/glance/blob/main/docs/configuration.md#authentication), or set `show-controls: false` to keep the token out of the page entirely.
+> With controls enabled (the default), the Music Assistant token is part of the page, because the browser sends the commands straight to Music Assistant. Anyone who can open your dashboard can read it. Use a dedicated user restricted to the players you show (step 1), keep Glance on your LAN or behind [Glance authentication](https://github.com/glanceapp/glance/blob/main/docs/configuration.md#authentication), or set `show-controls: false` to keep the token out of the page entirely.
 
 ## Requirements
 
@@ -16,7 +16,7 @@ Works with Music Assistant alone, no Home Assistant needed.
 
 ## Setup
 
-1. **Create a user for the widget.** In Music Assistant open *Settings → User management*, add a user (for example `glance`) with the role **Guest** and restrict it to the players you want on the dashboard. Then open the ⋮ menu next to the user, choose *Manage access tokens* and create a long-lived token. A guest can only read and control playback; it cannot change settings, users or music sources.
+1. **Create a user for the widget.** In Music Assistant open *Settings → User management*, add a user (for example `glance`) with the role **User** and set its *Player filter* to the players you want on the dashboard. Then open the ⋮ menu next to the user, choose *Manage access tokens* and create a token. It is valid for one year and does not renew itself. This user can control playback, edit the library (favourites, playlists) and read the configuration, but it cannot change settings, users or music sources. The **Guest** role does not work: Music Assistant does not create long-lived tokens for guests.
 
 2. **Add two environment variables to Glance:**
 
@@ -49,8 +49,9 @@ Player ids are shown at the top of each player's settings page in Music Assistan
 ## Troubleshooting
 
 - **"Cannot connect to …" under the controls**: the browser cannot reach `public-url`. If Glance is served over HTTPS, the browser only allows a secure connection to Music Assistant, so Music Assistant has to be behind HTTPS as well (for example your reverse proxy), and `public-url` must use `https://`.
-- **"Music Assistant login failed"**: the token is wrong, expired or revoked. Create a new one and update `MA_TOKEN`.
-- **"… does not have access to player …"**: the guest user is not allowed to use that player. Add the player to the user, or hide it with `players`.
+- **"Music Assistant login failed"**: the token is wrong, expired (after one year) or revoked. Create a new one and update `MA_TOKEN`.
+- **"Long-lived tokens cannot be created for guest accounts"** when creating the token: change the user's role to **User** (step 1).
+- **"… does not have access to player …"**: the player is not in the user's player filter. Add it to the filter, or hide it with `players`.
 - **Error `401 Unauthorized` in the widget**: Glance itself could not log in to Music Assistant; check `MA_URL` and `MA_TOKEN`.
 - **"Nothing is playing" while music plays**: the player has no Music Assistant queue (for example playback started from another app), or it is filtered out by `players`.
 

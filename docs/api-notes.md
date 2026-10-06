@@ -54,13 +54,21 @@ releases a new version.
 - Built-in roles: `admin` (everything), `user`, `guest`, `service`
   (`controllers/webserver/helpers/auth_middleware.py`, `ROLE_SCOPES`).
 - `guest` holds `library.read`, `players.read`, `players.control`, `queues.read`, `queues.control`,
-  `providers.read`, `config.players.read`: exactly what the widget needs, so the token in the page
-  cannot change settings, users or providers.
+  `providers.read`, `config.players.read`: exactly what the widget needs, but guests are temporary
+  (party, quiz and dashboard sessions). Since 2.10.0 `auth/token/create` refuses long-lived tokens
+  for them and their other tokens expire after one day (`TOKEN_GUEST_EXPIRATION` in
+  `controllers/webserver/auth.py`), so the widget cannot use a guest.
+- `user` adds `library.write`, `config.providers.read`, `config.core.read`, `system.read` and
+  `users.invite` (only casts Music Assistant dashboards, `dashboard/show`). It cannot change
+  settings, users or providers. This is the role for the widget's token.
+- Long-lived tokens expire after 365 days (`TOKEN_LONG_LIVED_EXPIRATION`) and do not renew. The
+  2.10.5 frontend says 10 years; the server decides.
 - A user can be restricted to a list of players (`player_filter`). Control commands check it
   (`_check_player_permission` in `controllers/player_queues/controller.py`), but
   `player_queues/all` still returns every queue. The widget's `players` option hides the others.
-- Custom roles with chosen scopes (`auth/role/create`) exist on `main` (2.11), not in 2.10.5. A
-  custom role "guest + `library.write`" would allow a favourite button without the full user role.
+- Custom roles with chosen scopes (`auth/role/create`) exist on `main` (2.11), not in 2.10.5. The
+  guest token block checks the role id `guest` only, so a custom role with the guest scopes (plus
+  `library.write` for a favourite button) would give the widget a smaller token than `user`.
 
 ### Images
 

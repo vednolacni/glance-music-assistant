@@ -15,7 +15,7 @@ works without Home Assistant.
 
 ## Quick start
 
-1. In Music Assistant create a **guest** user limited to your dashboard players and a long-lived token for it.
+1. In Music Assistant create a user with the role **User**, a player filter for your dashboard players and a long-lived token for it (guests cannot have long-lived tokens).
 2. Give Glance the environment variables `MA_URL` (for example `http://192.168.1.10:8095`) and `MA_TOKEN`.
 3. Copy [`widget/music-assistant.yml`](widget/music-assistant.yml) next to your `glance.yml` and include it in a column:
 
@@ -39,7 +39,7 @@ dev/      mock Music Assistant, local Glance config, browser tests
 - [x] Read-only view from the Music Assistant HTTP API
 - [x] Controls over the Music Assistant WebSocket API, widget-only refresh
 - [ ] Live updates from Music Assistant events: running time, drag to seek, volume slider, instant button state
-- [ ] Optional favourite button (needs a role with `library.write`)
+- [ ] Optional favourite button (`library.write`, part of the User role)
 - [ ] Submit to [glanceapp/community-widgets](https://github.com/glanceapp/community-widgets)
 
 ## Development
