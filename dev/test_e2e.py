@@ -195,6 +195,19 @@ def run_browser_tests(screenshots: bool) -> None:
             expect(title).to_have_text("Afterglow Street", timeout=12000)  # next track, no click
         check("refreshes by itself when the track ends", auto_refresh_at_track_end)
 
+        def big_cover_layout() -> None:
+            big = page.locator('[data-ma-root="ma-big"] .panel-music-assistant:visible')
+            art, queue = big.locator(".art-music-assistant"), big.locator(".queue-music-assistant")
+            a, q = art.bounding_box(), queue.bounding_box()
+            assert q["x"] >= a["x"] + a["width"] and abs(q["y"] - a["y"]) < 40, ("up next beside the cover", a, q)
+            page.set_viewport_size({"width": 390, "height": 844})
+            page.wait_for_timeout(300)
+            a, q = art.bounding_box(), queue.bounding_box()
+            assert q["y"] >= a["y"] + a["height"], ("up next below the cover", a, q)
+            page.set_viewport_size({"width": 1440, "height": 1100})
+            page.wait_for_timeout(300)
+        check("big cover: up next beside the cover when wide, below it when narrow", big_cover_layout)
+
         def read_only() -> None:
             ro = page.locator('[data-ma-root="ma-ro"]')
             expect(ro.locator("button")).to_have_count(0)

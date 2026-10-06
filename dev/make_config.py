@@ -39,7 +39,7 @@ pages:
 {variant({}, INDENT)}
       - size: full
         widgets:
-{variant({"id: ma ": "id: ma-big ", "big-cover: false": "big-cover: true", "queue-length: 4 ": "queue-length: 3 "}, INDENT)}
+{variant({"id: ma ": "id: ma-big ", "big-cover: false": "big-cover: true", "queue-length: 4 ": "queue-length: 8 "}, INDENT)}
 {variant({"id: ma ": "id: ma-ro ", "show-controls: true ": "show-controls: false", "title: Music Assistant": "title: Read-only"}, INDENT)}
 """
 

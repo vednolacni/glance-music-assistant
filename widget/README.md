@@ -41,7 +41,7 @@ Works with Music Assistant alone, no Home Assistant needed.
 | `show-favorite` | `true` | Heart button that adds the current track to the favourites or removes it; `false` hides it |
 | `queue-length` | `4` | Upcoming tracks to list; `0` hides the list |
 | `max-players` | `4` | Number of player tabs, 1 to 6 |
-| `big-cover` | `false` | Large cover on top, like the Music Assistant player screen; best in a full column |
+| `big-cover` | `false` | Large cover like the Music Assistant player screen. When the widget is at least 720px wide (a column of about 760px, such as a full column), up next moves next to the cover; a longer `queue-length` (for example `8`) fills that side |
 | `auto-refresh` | `true` | Update when the track ends and every `refresh-interval` seconds |
 | `refresh-interval` | `30` | Seconds between updates while `auto-refresh` is on |
 
@@ -87,7 +87,7 @@ Icons are from Google's Material Icons (Apache License 2.0).
     show-favorite: true     # heart button that adds or removes the current track from the favourites
     queue-length: 4         # upcoming tracks to list, 0 hides the list
     max-players: 4          # number of player tabs, 1 to 6
-    big-cover: false        # large cover on top, like the Music Assistant player screen
+    big-cover: false        # large cover like the Music Assistant player screen, up next beside it in a wide column
     auto-refresh: true      # update when the track ends and every refresh-interval seconds
     refresh-interval: 30
   template: |
@@ -213,6 +213,13 @@ Icons are from Google's Material Icons (Apache License 2.0).
       .secondary-music-assistant .on-music-assistant { color: var(--color-primary); }
       .queue-music-assistant { margin-top: 1.4rem; padding-top: 1.2rem; border-top: 1px solid var(--color-separator); }
       .queue-head-music-assistant { display: flex; justify-content: space-between; margin-bottom: 0.6rem; font-size: var(--font-size-h6); color: var(--color-text-subdue); }
+      @container (min-width: 720px) {
+        .big-music-assistant .panel-music-assistant:has(> .queue-music-assistant) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-content: start; }
+        .big-music-assistant .panel-music-assistant:has(> .queue-music-assistant) > :not(.queue-music-assistant) { grid-column: 1; width: 100%; }
+        .big-music-assistant .panel-music-assistant:has(> .queue-music-assistant) > .queue-music-assistant {
+          grid-column: 2; grid-row: 1 / span 5; margin: 0 0 0 3.2rem; padding: 0 0 0 3.2rem; border-top: 0; border-left: 1px solid var(--color-separator);
+        }
+      }
       .row-music-assistant { display: flex; align-items: center; gap: 1rem; margin-inline: -0.5rem; padding: 0.5rem; border-radius: var(--border-radius); }
       .row-music-assistant[data-ma-cmd] { cursor: pointer; }
       .row-music-assistant[data-ma-cmd]:hover { background: var(--color-widget-background-highlight); }
