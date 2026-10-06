@@ -25,22 +25,6 @@ A [Glance](https://github.com/glanceapp/glance) dashboard widget that shows and 
 
 Options, the security note about the token and troubleshooting are in [`widget/README.md`](widget/README.md).
 
-## Repository layout
-
-```
-widget/   the widget: music-assistant.yml, README in community-widgets format, meta.yml, previews
-docs/     api-notes.md (verified Music Assistant and Glance details), example API responses
-dev/      mock Music Assistant, local Glance config, browser tests
-```
-
-## Roadmap
-
-- [x] Read-only view from the Music Assistant HTTP API
-- [x] Controls over the Music Assistant WebSocket API, widget-only refresh
-- [ ] Live updates from Music Assistant events: running time, drag to seek, volume slider, instant button state
-- [x] Favourite button for the current track
-- [ ] Submit to [glanceapp/community-widgets](https://github.com/glanceapp/community-widgets)
-
 ## Development
 
 See [`dev/README.md`](dev/README.md). In short: `python3 dev/test_e2e.py` runs a mock Music Assistant and
