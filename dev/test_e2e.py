@@ -145,6 +145,17 @@ def run_browser_tests(screenshots: bool) -> None:
                 "aria-label", "Repeat: all", timeout=6000)
         check("repeat cycles off -> all", repeat)
 
+        def favourite() -> None:
+            heart = page.locator(f'{panel} [aria-label="Favourite"]')
+            expect(heart).to_have_attribute("aria-pressed", "false")
+            heart.click()
+            expect(heart).to_have_attribute("aria-pressed", "true", timeout=6000)
+            assert last_command("music/favorites/add_item")["args"] == {"item": "library://track/5"}  # Slow Orbit
+            heart.click()
+            expect(heart).to_have_attribute("aria-pressed", "false", timeout=6000)
+            assert last_command("music/favorites/remove_item")["args"] == {"media_type": "track", "library_item_id": "5"}
+        check("favourite button adds and removes the current track", favourite)
+
         def volume() -> None:
             page.locator(f'{panel} [data-ma-cmd="players/cmd/volume_up"]').click()
             page.wait_for_timeout(600)

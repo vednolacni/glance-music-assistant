@@ -48,9 +48,19 @@ releases a new version.
 | `player_queues/play_index` | `queue_id`, `index` (int, or a `queue_item_id` string) | `queues.control` |
 | `players/cmd/volume_up`, `players/cmd/volume_down` | `player_id` | `players.control` |
 | `players/cmd/volume_set` | `player_id`, `volume_level` | `players.control` |
-| `players/add_currently_playing_to_favorites` | `player_id` | `library.write` (not for guests) |
+| `music/item_by_uri` | `uri` | `library.read` |
+| `music/favorites/add_item` | `item` (a URI) | `library.write` (not for guests) |
+| `music/favorites/remove_item` | `media_type`, `library_item_id` | `library.write` (not for guests) |
 
 `queue_id` equals the `player_id` unless the player is grouped.
+
+Favourites: a queue item keeps the `favorite` flag its media item had when it was queued, and
+`music/favorites/*` do not update it. `music/item_by_uri` with `current_item.media_item.uri` returns
+the library item when there is one (`MediaControllerBase.get` prefers it), with the current flag;
+about 30 to 50 ms on a real server. A favourite is always a library item (`provider` is `library`),
+so its `item_id` is the `library_item_id` for removing it; `add_item` adds a provider item to the
+library first. `players/add_currently_playing_to_favorites` exists too, but for radio it searches
+the track from the stream title, which the widget could not show as a state.
 
 ### Users, roles and scopes
 
@@ -75,7 +85,7 @@ releases a new version.
   announced it, which never applies to the widget.
 - Custom roles with chosen scopes (`auth/role/create`) exist on `main` (2.11), not in 2.10.5. The
   guest token block checks the role id `guest` only, so a custom role with the guest scopes (plus
-  `library.write` for a favourite button) would give the widget a smaller token than `user`.
+  `library.write` for the favourite button) would give the widget a smaller token than `user`.
 
 ### Images
 

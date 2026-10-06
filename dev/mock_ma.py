@@ -155,6 +155,7 @@ BROKEN_COVERS = {_image("Low Tide Radio")["proxy_id"]}
 class MockMA:
     def __init__(self) -> None:
         self.state = initial_state()
+        self.favorites: set[str] = set()
         self.log: list[dict] = []
         self.sockets: set[web.WebSocketResponse] = set()
 
@@ -214,6 +215,20 @@ class MockMA:
         if command == "players/all":  # MA applies the player filter here, not to player_queues/all
             return [{"player_id": k, "name": d["queue"]["display_name"], "volume_level": d["volume"]}
                     for k, d in self.state.items() if k in PLAYER_FILTER]
+
+        if command == "music/item_by_uri":  # MA returns the library item, with its current favourite flag
+            uri = args["uri"]
+            for i, (title, _, _, _) in enumerate(CATALOGUE):
+                if uri == f"library://track/{i + 1}":
+                    return {"item_id": str(i + 1), "provider": "library", "media_type": "track", "uri": uri,
+                            "name": title, "favorite": uri in self.favorites}
+            raise ValueError(f"Unknown item {uri}")
+        if command == "music/favorites/add_item":
+            self.favorites.add(args["item"])
+            return None
+        if command == "music/favorites/remove_item":
+            self.favorites.discard(f"library://{args['media_type']}/{args['library_item_id']}")
+            return None
 
         target = args.get("queue_id", args.get("player_id"))
         if target in self.state and target not in PLAYER_FILTER:
@@ -376,6 +391,7 @@ async def handle_log(_: web.Request) -> web.Response:
 
 async def handle_reset(_: web.Request) -> web.Response:
     mock.state = initial_state()
+    mock.favorites.clear()
     mock.log.clear()
     return web.json_response({"ok": True})
 

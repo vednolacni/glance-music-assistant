@@ -7,7 +7,7 @@ works without Home Assistant.
 ![Music Assistant widget](widget/preview.png)
 
 - Now playing with cover art, artist and album, one tab per player with a queue
-- Play/pause, previous/next, seek by clicking the progress bar, volume, shuffle and repeat
+- Play/pause, previous/next, seek by clicking the progress bar, volume, shuffle, repeat and favourite
 - Up next list; click a track to play it
 - Updates itself when a track ends, and only the widget re-renders after a command
 - Read-only mode that keeps the token out of the page
@@ -39,7 +39,7 @@ dev/      mock Music Assistant, local Glance config, browser tests
 - [x] Read-only view from the Music Assistant HTTP API
 - [x] Controls over the Music Assistant WebSocket API, widget-only refresh
 - [ ] Live updates from Music Assistant events: running time, drag to seek, volume slider, instant button state
-- [ ] Optional favourite button (`library.write`, part of the User role)
+- [x] Favourite button for the current track
 - [ ] Submit to [glanceapp/community-widgets](https://github.com/glanceapp/community-widgets)
 
 ## Development
