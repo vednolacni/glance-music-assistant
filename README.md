@@ -1,8 +1,7 @@
 # Glance Music Assistant
 
 A [Glance](https://github.com/glanceapp/glance) dashboard widget that shows and controls your
-[Music Assistant](https://www.music-assistant.io) players. It talks to Music Assistant directly, so it
-works without Home Assistant.
+[Music Assistant](https://www.music-assistant.io) players. It talks to Music Assistant directly.
 
 ![Music Assistant widget](widget/preview.png)
 
