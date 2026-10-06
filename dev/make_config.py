@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-WIDGET = (ROOT / "widget" / "music-assistant.yml").read_text()
+WIDGET = (ROOT / "widget" / "music-assistant.yml").read_text(encoding="utf-8")
 
 
 def variant(replacements: dict[str, str], indent: str) -> str:
@@ -44,5 +44,5 @@ pages:
 """
 
 out = Path(os.environ.get("CONFIG_OUT", ROOT / "dev" / "glance.generated.yml"))
-out.write_text(config)
+out.write_text(config, encoding="utf-8")
 print(f"wrote {out}")
