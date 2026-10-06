@@ -1,3 +1,5 @@
+# Music Assistant Player
+
 ![Music Assistant widget in a small column](preview.png)
 
 ![Music Assistant widget with big-cover in a full column](preview-big-cover.png)
@@ -25,7 +27,7 @@ Works with Music Assistant alone, no Home Assistant needed.
    MA_TOKEN=eyJhbGciOi...            # the token from step 1
    ```
 
-3. **Add the widget** to a column, either by pasting the YAML below or with `$include: music-assistant.yml`.
+3. **Add the widget** to a column, either by pasting the YAML below or by saving [`music-assistant.yml`](https://github.com/vednolacni/glance-music-assistant/blob/main/widget/music-assistant.yml) next to your `glance.yml` and adding `- $include: music-assistant.yml`.
 
 4. **If Glance runs in Docker** and reaches Music Assistant under a different address than your browser does (for example a container name), set `public-url` to the address your browser can open. It is used for the controls and the cover art.
 
@@ -60,6 +62,10 @@ Player ids are shown at the top of each player's settings page in Music Assistan
 ## How it works
 
 Glance reads `player_queues/all`, `players/all` (the players the user may use), the upcoming tracks and the favourite state of each current track from the Music Assistant HTTP API on the server side. The buttons send commands over the Music Assistant WebSocket API, because the HTTP API does not allow requests from other sites in the browser (no CORS) while WebSockets are not limited that way. After a command, only this widget is re-rendered, without reloading the page.
+
+`cache: 1s` is deliberate: the widget asks Glance for its fresh state about 1.5 seconds after a command, at the end of a track and every `refresh-interval` seconds, and a longer cache would show the old state. Music Assistant is only queried at those moments and when the page loads, not every second.
+
+Source, tests and issues: [vednolacni/glance-music-assistant](https://github.com/vednolacni/glance-music-assistant).
 
 Icons are from Google's Material Icons (Apache License 2.0).
 
