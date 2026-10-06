@@ -6,7 +6,7 @@ Chromium (Playwright) and checks rendering, every control, soft refresh,
 auto refresh at the end of a track, error reporting and the read-only variant.
 
 Requirements: glance binary on PATH (or $GLANCE_BIN), pip install aiohttp pillow playwright
-Run:          python3 dev/test_e2e.py [--screenshots]
+Run:          python3 dev/test_e2e.py [--screenshots]   (screenshots of the mock go to dev/page*.png)
 """
 
 from __future__ import annotations
@@ -206,10 +206,10 @@ def run_browser_tests(screenshots: bool) -> None:
             page.mouse.move(0, 0)
             page.wait_for_function("window.maPlayer !== undefined", timeout=5000)
             page.wait_for_timeout(800)
-            out = ROOT / "widget"
-            page.locator(".widget", has=page.locator('[data-ma-root="ma"]')).screenshot(path=out / "preview.png")
+            out = ROOT / "dev"  # widget/preview*.png come from a real Music Assistant (dev/screenshot.py)
+            page.locator(".widget", has=page.locator('[data-ma-root="ma"]')).screenshot(path=out / "page-preview.png")
             page.locator(".widget", has=page.locator('[data-ma-root="ma-big"]')).screenshot(
-                path=out / "preview-big-cover.png")
+                path=out / "page-preview-big-cover.png")
             page.screenshot(path=ROOT / "dev" / "page.png", full_page=True)
             page.set_viewport_size({"width": 390, "height": 844})
             page.wait_for_timeout(500)

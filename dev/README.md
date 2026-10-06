@@ -8,6 +8,7 @@ Everything here runs locally without a real Music Assistant.
 | `make_config.py` | Writes `glance.generated.yml`: a page with the default, `big-cover` and read-only variants |
 | `test_e2e.py` | Starts the mock and Glance, clicks through the widget in Chromium and checks every command |
 | `sync_readme.py` | Copies `widget/music-assistant.yml` into `widget/README.md` |
+| `screenshot.py` | Saves `widget/preview*.png` from a running Glance |
 
 ## Requirements
 
@@ -30,10 +31,19 @@ Glance reloads the config by itself.
 Point `MA_URL` and `MA_TOKEN` at your server instead of the mock. `GET <MA_URL>/api-docs` lists every
 command of your Music Assistant version.
 
+## Preview images
+
+`widget/preview*.png` show a real Music Assistant. With Glance running against it as above, start
+some music and run:
+
+```bash
+python3 dev/screenshot.py                 # or: dev/screenshot.py http://host:8080 --player "Kitchen"
+```
+
 ## Tests
 
 ```bash
-python3 dev/test_e2e.py                   # add --screenshots to refresh widget/preview*.png
+python3 dev/test_e2e.py                   # add --screenshots to save the mock to dev/page*.png
 python3 dev/sync_readme.py --check
 ```
 
