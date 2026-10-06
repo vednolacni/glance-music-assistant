@@ -93,6 +93,13 @@ def run_browser_tests(screenshots: bool) -> None:
             fn()
             print(f"  ok  {name}")
 
+        def click_bar(fraction: float) -> None:
+            # Relative to the bar, not the viewport: Playwright may scroll the page while it
+            # retries a click on an element that is still moving in Glance's entrance animation
+            bar = page.locator(f"{panel} .bar-music-assistant")
+            box = bar.bounding_box()
+            bar.click(position={"x": box["width"] * fraction, "y": box["height"] / 2})
+
         check("renders the playing player first", lambda: expect(title).to_have_text("Night Ferry"))
         check("shows a tab per player with a queue", lambda: expect(
             page.locator('[data-ma-root="ma"] .tab-music-assistant')).to_have_text(["Living room", "Kitchen"]))
@@ -117,9 +124,7 @@ def run_browser_tests(screenshots: bool) -> None:
         expect(page.locator(f'{panel} .play-music-assistant')).to_have_attribute("aria-label", "Pause", timeout=6000)
 
         def seek() -> None:
-            bar = page.locator(f"{panel} .bar-music-assistant")
-            box = bar.bounding_box()
-            page.mouse.click(box["x"] + box["width"] * 0.5, box["y"] + box["height"] / 2)
+            click_bar(0.5)
             expect(page.locator(f"{panel} .time-music-assistant").first).to_have_text(
                 re.compile(r"1:4[0-4]"), timeout=6000)  # keeps playing during the refresh
             position = last_command("player_queues/seek")["args"]["position"]
@@ -167,9 +172,7 @@ def run_browser_tests(screenshots: bool) -> None:
         check("keyboard Enter on a queue row", keyboard)
 
         def auto_refresh_at_track_end() -> None:
-            bar = page.locator(f"{panel} .bar-music-assistant")
-            box = bar.bounding_box()
-            page.mouse.click(box["x"] + box["width"] * 0.995, box["y"] + box["height"] / 2)
+            click_bar(0.995)
             expect(title).to_have_text("Afterglow Street", timeout=12000)  # next track, no click
         check("refreshes by itself when the track ends", auto_refresh_at_track_end)
 
