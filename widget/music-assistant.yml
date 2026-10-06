@@ -33,6 +33,15 @@
     {{- $refresh := 0 -}}
     {{- if .Options.BoolOr "auto-refresh" true }}{{ $refresh = .Options.IntOr "refresh-interval" 30 }}{{ end -}}
 
+    {{- /* Players the token's user may use: Music Assistant applies the user's player filter to players/all, not to player_queues/all */ -}}
+    {{- $access := newRequest "${MA_URL}/api"
+          | withHeader "Authorization" "Bearer ${MA_TOKEN}"
+          | withHeader "Content-Type" "application/json"
+          | withStringBody `{"message_id":"glance","command":"players/all"}`
+          | getResponse -}}
+    {{- $usable := "" -}}
+    {{- if eq $access.Response.StatusCode 200 }}{{ $usable = "," }}{{ range $access.JSON.Array "" }}{{ $usable = printf "%s%s," $usable (.String "player_id") }}{{ end }}{{ end -}}
+
     {{- /* Pass 1: players to show (have a current track) and the one to open first */ -}}
     {{- $shown := "," -}}
     {{- $count := 0 -}}
@@ -41,7 +50,7 @@
     {{- $preferredShown := false -}}
     {{- range .JSON.Array "" -}}
       {{- $qid := .String "queue_id" -}}
-      {{- if and (.Bool "available") (ne (.String "current_item.queue_item_id") "") (lt $count $maxPlayers) (or (eq $allowed ",,") (ne (replaceAll (printf ",%s," $qid) "" $allowed) $allowed)) -}}
+      {{- if and (.Bool "available") (ne (.String "current_item.queue_item_id") "") (lt $count $maxPlayers) (or (eq $allowed ",,") (ne (replaceAll (printf ",%s," $qid) "" $allowed) $allowed)) (or (eq $usable "") (ne (replaceAll (printf ",%s," $qid) "" $usable) $usable)) -}}
         {{- $shown = printf "%s%s," $shown $qid -}}
         {{- $count = add $count 1 -}}
         {{- if eq $first "" }}{{ $first = $qid }}{{ end -}}
@@ -92,10 +101,10 @@
       }
       .now-music-assistant { display: flex; align-items: center; gap: 1.4rem; }
       .art-music-assistant {
-        flex-shrink: 0; width: 7.2rem; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden;
+        position: relative; flex-shrink: 0; width: 7.2rem; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden;
         border-radius: var(--border-radius); background: var(--color-widget-background-highlight); color: var(--color-text-subdue);
       }
-      .art-music-assistant img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .art-music-assistant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
       .art-music-assistant svg { width: 40%; height: 40%; fill: currentColor; }
       .meta-music-assistant { min-width: 0; flex: 1; }
       .title-music-assistant { font-size: var(--font-size-h3); color: var(--color-text-highlight); }
@@ -323,7 +332,8 @@
         <div class="panel-music-assistant{{ if eq $state "playing" }} playing-music-assistant{{ end }}" data-ma-queue="{{ $qid }}"{{ if and (eq $state "playing") (gt $duration 0) }} data-ma-remaining="{{ $remaining }}"{{ end }}>
           <div class="now-music-assistant">
             <div class="art-music-assistant">
-              {{- if $image }}<img src="{{ $server }}/imageproxy/{{ $image }}?size={{ if $big }}512{{ else }}256{{ end }}" alt="">{{ else }}{{ template "ma-icon-note" }}{{ end -}}
+              {{- template "ma-icon-note" }}
+              {{- if $image }}<img src="{{ $server }}/imageproxy/{{ $image }}?size={{ if $big }}512{{ else }}256{{ end }}" alt="" onerror="this.remove()">{{ end -}}
             </div>
             <div class="meta-music-assistant">
               <div class="title-music-assistant text-truncate" title="{{ $title }}">{{ $title }}</div>
@@ -377,7 +387,7 @@
               {{- if eq $name "" }}{{ $name = .String "name" }}{{ end }}
               <li class="row-music-assistant"{{ if $controls }} role="button" tabindex="0" title="Play now" data-ma-cmd="player_queues/play_index" data-ma-args='{"index": "{{ .String "queue_item_id" }}"}' onclick="window.maPlayer && window.maPlayer.cmd(this, event)" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click(); }"{{ end }}>
                 {{- if .String "image.proxy_id" }}
-                <img class="thumb-music-assistant" src="{{ $server }}/imageproxy/{{ .String "image.proxy_id" }}?size=80" alt="">
+                <img class="thumb-music-assistant" src="{{ $server }}/imageproxy/{{ .String "image.proxy_id" }}?size=80" alt="" onerror="var s = document.createElement('span'); s.className = this.className; this.replaceWith(s);">
                 {{- else }}
                 <span class="thumb-music-assistant"></span>
                 {{- end }}

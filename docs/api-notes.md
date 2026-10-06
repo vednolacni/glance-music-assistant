@@ -22,7 +22,9 @@ releases a new version.
   the reply is `{"message_id": "auth", "result": {"authenticated": true, "user": {...}}}`.
 - Commands use the same names and arguments as the HTTP API. Replies:
   - success: `{"message_id": ..., "result": ..., "partial": false}`
-  - error: `{"message_id": ..., "error_code": <int>, "details": "<text>"}`
+  - error: `{"message_id": ..., "error_code": <int>, "details": "<text>"}`. `details` is translated
+    by error type (`translation_key`), so the specific English message is replaced: a player outside
+    the player filter arrives as error 22, "You do not have permission to perform this action."
 - After authentication the connection receives every event, for example
   `{"event": "queue_updated", "object_id": "<queue_id>", "data": {...}}`. Event types used later
   for live updates: `player_updated`, `queue_updated`, `queue_items_updated`, `queue_time_updated`.
@@ -36,6 +38,7 @@ releases a new version.
 | Command | Arguments | Scope |
 |---|---|---|
 | `player_queues/all` | none | `queues.read` |
+| `players/all` | none (only `player_id` is used) | `players.read` |
 | `player_queues/items` | `queue_id`, `limit` (default 500), `offset` | `queues.read` |
 | `player_queues/play_pause` | `queue_id` | `queues.control` |
 | `player_queues/previous`, `player_queues/next` | `queue_id` | `queues.control` |
@@ -64,8 +67,12 @@ releases a new version.
 - Long-lived tokens expire after 365 days (`TOKEN_LONG_LIVED_EXPIRATION`) and do not renew. The
   2.10.5 frontend says 10 years; the server decides.
 - A user can be restricted to a list of players (`player_filter`). Control commands check it
-  (`_check_player_permission` in `controllers/player_queues/controller.py`), but
-  `player_queues/all` still returns every queue. The widget's `players` option hides the others.
+  (`_check_player_permission` in `controllers/player_queues/controller.py`) and `players/all`
+  returns only those players (`all_players` in `controllers/players/controller.py`), but
+  `player_queues/all` still returns every queue, including other people's browser players. The
+  widget shows only queues whose id is in `players/all`; if that request fails it shows them all.
+  A private client player (a browser or app session) is always usable by the connection that
+  announced it, which never applies to the widget.
 - Custom roles with chosen scopes (`auth/role/create`) exist on `main` (2.11), not in 2.10.5. The
   guest token block checks the role id `guest` only, so a custom role with the guest scopes (plus
   `library.write` for a favourite button) would give the widget a smaller token than `user`.
@@ -76,6 +83,8 @@ releases a new version.
   `<server>/imageproxy/<proxy_id>?size=<n>`, where `n` is one of `0, 80, 160, 256, 512, 1024`.
 - The image proxy needs no token and sends `Access-Control-Allow-Origin: *`, so `<img>` tags in
   the browser work directly.
+- It answers 404 when it cannot fetch the original, for example a radio logo URL that now
+  redirects (seen with a radiobrowser station). The widget then falls back to the note icon.
 
 ### Fields used
 

@@ -32,6 +32,10 @@ from PIL import Image, ImageDraw
 TOKEN = os.environ.get("MOCK_MA_TOKEN", "dev-token")
 PORT = int(os.environ.get("MOCK_MA_PORT", "8095"))
 ALLOWED_SIZES = {0, 80, 160, 256, 512, 1024}
+# The token belongs to a user with this player filter; web_chrome is someone else's browser player
+PLAYER_FILTER = {"living_room", "kitchen", "bedroom", "office"}
+# MA sends errors in the connection's language; this is the English text for a missing permission
+NO_PERMISSION = "You do not have permission to perform this action."
 
 # Invented catalogue: (title, artists, album, duration in seconds)
 CATALOGUE = [
@@ -140,7 +144,12 @@ def initial_state() -> dict:
         "kitchen": _queue("kitchen", "Kitchen", "paused", 12, 0, 95.0, start=5),
         "bedroom": _queue("bedroom", "Bedroom", "idle", 0, None, 0.0),
         "office": _queue("office", "Office", "idle", 4, 0, 0.0, available=False, start=2),
+        "web_chrome": _queue("web_chrome", "Web (Chrome on Mac)", "playing", 6, 1, 20.0, start=7),
     }
+
+
+# Cover art the image proxy cannot fetch, like a radio logo whose URL moved
+BROKEN_COVERS = {_image("Low Tide Radio")["proxy_id"]}
 
 
 class MockMA:
@@ -202,9 +211,13 @@ class MockMA:
             data = self._queue_data(args)
             offset, limit = int(args.get("offset", 0)), int(args.get("limit", 500))
             return data["items"][offset: offset + limit]
-        if command == "players/all":
+        if command == "players/all":  # MA applies the player filter here, not to player_queues/all
             return [{"player_id": k, "name": d["queue"]["display_name"], "volume_level": d["volume"]}
-                    for k, d in self.state.items()]
+                    for k, d in self.state.items() if k in PLAYER_FILTER]
+
+        target = args.get("queue_id", args.get("player_id"))
+        if target in self.state and target not in PLAYER_FILTER:
+            raise PermissionError(f"glance does not have access to player {target}")
 
         if command.startswith("players/cmd/volume"):
             data = self._queue_data(args, "player_id")
@@ -272,6 +285,8 @@ async def handle_api(request: web.Request) -> web.Response:
     try:
         msg = json.loads(await request.read())
         result = mock.run(msg["command"], msg.get("args"), "http")
+    except PermissionError as err:
+        return web.Response(status=403, text=str(err))
     except LookupError as err:
         return web.Response(status=400, text=str(err))
     except (ValueError, KeyError) as err:
@@ -306,6 +321,9 @@ async def handle_ws(request: web.Request) -> web.WebSocketResponse:
                 continue
             try:
                 result = mock.run(msg["command"], msg.get("args"), "ws")
+            except PermissionError:
+                await ws.send_json({"message_id": mid, "error_code": 22, "details": NO_PERMISSION})
+                continue
             except LookupError as err:
                 await ws.send_json({"message_id": mid, "error_code": 1, "details": str(err)})
                 continue
@@ -328,6 +346,8 @@ async def handle_imageproxy(request: web.Request) -> web.Response:
     size = int(request.query.get("size", "0") or 0)
     if size not in ALLOWED_SIZES:
         return web.Response(status=400, text="Invalid size")
+    if image_id in BROKEN_COVERS:
+        return web.Response(status=404)
     px = size or 512
     key = (image_id, px)
     if key not in _covers:

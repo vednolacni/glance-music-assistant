@@ -82,7 +82,8 @@ def run_browser_tests(screenshots: bool) -> None:
         page = browser.new_page(viewport={"width": 1440, "height": 1100}, device_scale_factor=2)
         problems: list[str] = []
         page.on("pageerror", lambda err: problems.append(f"page error: {err}"))
-        page.on("console", lambda msg: msg.type == "error" and problems.append(f"console: {msg.text}"))
+        page.on("console", lambda msg: msg.type == "error" and "/imageproxy/" not in msg.location.get("url", "")
+                and problems.append(f"console: {msg.text}"))  # the mock has one broken cover on purpose
 
         page.goto(GLANCE)
         widget = page.locator('[data-ma-root="ma"]')
@@ -103,6 +104,7 @@ def run_browser_tests(screenshots: bool) -> None:
         check("renders the playing player first", lambda: expect(title).to_have_text("Night Ferry"))
         check("shows a tab per player with a queue", lambda: expect(
             page.locator('[data-ma-root="ma"] .tab-music-assistant')).to_have_text(["Living room", "Kitchen"]))
+        check("hides players outside the user's player filter", lambda: expect(widget).not_to_contain_text("Web (Chrome"))
         check("lists four upcoming tracks", lambda: expect(
             page.locator(f"{panel} .row-music-assistant")).to_have_count(4))
         page.wait_for_function("window.maPlayer !== undefined", timeout=5000)
@@ -163,6 +165,12 @@ def run_browser_tests(screenshots: bool) -> None:
             expect(title).to_have_text("Hollow Pines")  # Kitchen stays open although Living room plays too
             assert last_command("player_queues/play_pause")["args"] == {"queue_id": "kitchen"}
         check("selected tab survives the refresh", tab_survives_refresh)
+
+        def broken_cover() -> None:
+            row = page.locator(f"{panel} .row-music-assistant", has_text="Undertow")
+            expect(row.locator("span.thumb-music-assistant")).to_have_count(1)
+            expect(row.locator("img")).to_have_count(0)
+        check("a cover that fails to load falls back to the placeholder", broken_cover)
 
         def keyboard() -> None:
             row = page.locator(f"{panel} .row-music-assistant").first

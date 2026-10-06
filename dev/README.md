@@ -4,7 +4,7 @@ Everything here runs locally without a real Music Assistant.
 
 | File | Purpose |
 |---|---|
-| `mock_ma.py` | Mock Music Assistant: `POST /api`, WebSocket `/ws`, `/imageproxy`, with four players and invented tracks |
+| `mock_ma.py` | Mock Music Assistant: `POST /api`, WebSocket `/ws`, `/imageproxy`, with invented tracks, four players in the token user's player filter, someone else's browser player outside it and one broken cover |
 | `make_config.py` | Writes `glance.generated.yml`: a page with the default, `big-cover` and read-only variants |
 | `test_e2e.py` | Starts the mock and Glance, clicks through the widget in Chromium and checks every command |
 | `sync_readme.py` | Copies `widget/music-assistant.yml` into `widget/README.md` |

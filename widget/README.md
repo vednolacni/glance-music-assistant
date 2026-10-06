@@ -34,7 +34,7 @@ Works with Music Assistant alone, no Home Assistant needed.
 | Option | Default | What it does |
 |---|---|---|
 | `id` | `ma` | Unique id; give each copy a different one if you add the widget more than once to a page |
-| `players` | `""` | Comma separated player ids to show; empty shows every player that has a queue |
+| `players` | `""` | Comma separated player ids to show; empty shows every player that has a queue and is in the user's player filter |
 | `player-id` | `""` | Player to open when nothing is playing |
 | `public-url` | `${MA_URL}` | Music Assistant address as the browser sees it |
 | `show-controls` | `true` | `false` makes the widget read-only and leaves the token out of the page |
@@ -51,13 +51,14 @@ Player ids are shown at the top of each player's settings page in Music Assistan
 - **"Cannot connect to …" under the controls**: the browser cannot reach `public-url`. If Glance is served over HTTPS, the browser only allows a secure connection to Music Assistant, so Music Assistant has to be behind HTTPS as well (for example your reverse proxy), and `public-url` must use `https://`.
 - **"Music Assistant login failed"**: the token is wrong, expired (after one year) or revoked. Create a new one and update `MA_TOKEN`.
 - **"Long-lived tokens cannot be created for guest accounts"** when creating the token: change the user's role to **User** (step 1).
-- **"… does not have access to player …"**: the player is not in the user's player filter. Add it to the filter, or hide it with `players`.
+- **"You do not have permission to perform this action"**: the user may not control that player. The widget only shows players in the user's player filter, so this happens when the filter changed after the page was loaded; reload the page.
 - **Error `401 Unauthorized` in the widget**: Glance itself could not log in to Music Assistant; check `MA_URL` and `MA_TOKEN`.
-- **"Nothing is playing" while music plays**: the player has no Music Assistant queue (for example playback started from another app), or it is filtered out by `players`.
+- **"Nothing is playing" while music plays**: the player has no Music Assistant queue (for example playback started from another app), it is not in the user's player filter, or it is filtered out by `players`.
+- **Music note instead of the cover**: Music Assistant could not fetch the image (for example a radio station logo whose address moved).
 
 ## How it works
 
-Glance reads `player_queues/all` and the upcoming tracks from the Music Assistant HTTP API on the server side. The buttons send commands over the Music Assistant WebSocket API, because the HTTP API does not allow requests from other sites in the browser (no CORS) while WebSockets are not limited that way. After a command, only this widget is re-rendered, without reloading the page.
+Glance reads `player_queues/all`, `players/all` (the players the user may use) and the upcoming tracks from the Music Assistant HTTP API on the server side. The buttons send commands over the Music Assistant WebSocket API, because the HTTP API does not allow requests from other sites in the browser (no CORS) while WebSockets are not limited that way. After a command, only this widget is re-rendered, without reloading the page.
 
 Icons are from Google's Material Icons (Apache License 2.0).
 
@@ -100,6 +101,15 @@ Icons are from Google's Material Icons (Apache License 2.0).
     {{- $refresh := 0 -}}
     {{- if .Options.BoolOr "auto-refresh" true }}{{ $refresh = .Options.IntOr "refresh-interval" 30 }}{{ end -}}
 
+    {{- /* Players the token's user may use: Music Assistant applies the user's player filter to players/all, not to player_queues/all */ -}}
+    {{- $access := newRequest "${MA_URL}/api"
+          | withHeader "Authorization" "Bearer ${MA_TOKEN}"
+          | withHeader "Content-Type" "application/json"
+          | withStringBody `{"message_id":"glance","command":"players/all"}`
+          | getResponse -}}
+    {{- $usable := "" -}}
+    {{- if eq $access.Response.StatusCode 200 }}{{ $usable = "," }}{{ range $access.JSON.Array "" }}{{ $usable = printf "%s%s," $usable (.String "player_id") }}{{ end }}{{ end -}}
+
     {{- /* Pass 1: players to show (have a current track) and the one to open first */ -}}
     {{- $shown := "," -}}
     {{- $count := 0 -}}
@@ -108,7 +118,7 @@ Icons are from Google's Material Icons (Apache License 2.0).
     {{- $preferredShown := false -}}
     {{- range .JSON.Array "" -}}
       {{- $qid := .String "queue_id" -}}
-      {{- if and (.Bool "available") (ne (.String "current_item.queue_item_id") "") (lt $count $maxPlayers) (or (eq $allowed ",,") (ne (replaceAll (printf ",%s," $qid) "" $allowed) $allowed)) -}}
+      {{- if and (.Bool "available") (ne (.String "current_item.queue_item_id") "") (lt $count $maxPlayers) (or (eq $allowed ",,") (ne (replaceAll (printf ",%s," $qid) "" $allowed) $allowed)) (or (eq $usable "") (ne (replaceAll (printf ",%s," $qid) "" $usable) $usable)) -}}
         {{- $shown = printf "%s%s," $shown $qid -}}
         {{- $count = add $count 1 -}}
         {{- if eq $first "" }}{{ $first = $qid }}{{ end -}}
@@ -159,10 +169,10 @@ Icons are from Google's Material Icons (Apache License 2.0).
       }
       .now-music-assistant { display: flex; align-items: center; gap: 1.4rem; }
       .art-music-assistant {
-        flex-shrink: 0; width: 7.2rem; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden;
+        position: relative; flex-shrink: 0; width: 7.2rem; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden;
         border-radius: var(--border-radius); background: var(--color-widget-background-highlight); color: var(--color-text-subdue);
       }
-      .art-music-assistant img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .art-music-assistant img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
       .art-music-assistant svg { width: 40%; height: 40%; fill: currentColor; }
       .meta-music-assistant { min-width: 0; flex: 1; }
       .title-music-assistant { font-size: var(--font-size-h3); color: var(--color-text-highlight); }
@@ -390,7 +400,8 @@ Icons are from Google's Material Icons (Apache License 2.0).
         <div class="panel-music-assistant{{ if eq $state "playing" }} playing-music-assistant{{ end }}" data-ma-queue="{{ $qid }}"{{ if and (eq $state "playing") (gt $duration 0) }} data-ma-remaining="{{ $remaining }}"{{ end }}>
           <div class="now-music-assistant">
             <div class="art-music-assistant">
-              {{- if $image }}<img src="{{ $server }}/imageproxy/{{ $image }}?size={{ if $big }}512{{ else }}256{{ end }}" alt="">{{ else }}{{ template "ma-icon-note" }}{{ end -}}
+              {{- template "ma-icon-note" }}
+              {{- if $image }}<img src="{{ $server }}/imageproxy/{{ $image }}?size={{ if $big }}512{{ else }}256{{ end }}" alt="" onerror="this.remove()">{{ end -}}
             </div>
             <div class="meta-music-assistant">
               <div class="title-music-assistant text-truncate" title="{{ $title }}">{{ $title }}</div>
@@ -444,7 +455,7 @@ Icons are from Google's Material Icons (Apache License 2.0).
               {{- if eq $name "" }}{{ $name = .String "name" }}{{ end }}
               <li class="row-music-assistant"{{ if $controls }} role="button" tabindex="0" title="Play now" data-ma-cmd="player_queues/play_index" data-ma-args='{"index": "{{ .String "queue_item_id" }}"}' onclick="window.maPlayer && window.maPlayer.cmd(this, event)" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click(); }"{{ end }}>
                 {{- if .String "image.proxy_id" }}
-                <img class="thumb-music-assistant" src="{{ $server }}/imageproxy/{{ .String "image.proxy_id" }}?size=80" alt="">
+                <img class="thumb-music-assistant" src="{{ $server }}/imageproxy/{{ .String "image.proxy_id" }}?size=80" alt="" onerror="var s = document.createElement('span'); s.className = this.className; this.replaceWith(s);">
                 {{- else }}
                 <span class="thumb-music-assistant"></span>
                 {{- end }}
