@@ -1,0 +1,338 @@
+[
+  {
+    "queue_id": "living_room",
+    "active": true,
+    "display_name": "Living room",
+    "available": true,
+    "items": 38,
+    "shuffle_enabled": false,
+    "repeat_mode": "off",
+    "crossfade_enabled": false,
+    "autoplay_enabled": false,
+    "current_index": 3,
+    "index_in_buffer": 3,
+    "ended": false,
+    "elapsed_time": 51.0,
+    "elapsed_time_last_updated": 1791287988.4262855,
+    "playback_speed": 1.0,
+    "state": "playing",
+    "current_item": {
+      "queue_id": "living_room",
+      "queue_item_id": "c5b1822070ef82c95a6976244c6fc4c3",
+      "name": "Lumen & Vale - Night Ferry",
+      "duration": 229,
+      "sort_index": 3,
+      "streamdetails": null,
+      "media_item": {
+        "item_id": "4",
+        "provider": "library",
+        "name": "Night Ferry",
+        "media_type": "track",
+        "uri": "library://track/4",
+        "duration": 229,
+        "artists": [
+          {
+            "item_id": "100",
+            "provider": "library",
+            "name": "Lumen & Vale",
+            "media_type": "artist",
+            "uri": "library://artist/100"
+          }
+        ],
+        "album": {
+          "item_id": "a4",
+          "provider": "library",
+          "name": "Night Ferry",
+          "media_type": "album",
+          "uri": "library://album/a4"
+        }
+      },
+      "image": {
+        "type": "thumb",
+        "path": "https://covers.example/Night_Ferry.jpg",
+        "provider": "mock",
+        "remotely_accessible": false,
+        "proxy_id": "c5ac9a9fe4859cef4c8850f73969070ae31884bd69edeb0c8a58ea5e68761c57"
+      },
+      "index": 0,
+      "available": true
+    },
+    "next_item": {
+      "queue_id": "living_room",
+      "queue_item_id": "8934dee014a91632665dc083122af565",
+      "name": "Kestrel Avenue - Slow Orbit",
+      "duration": 201,
+      "sort_index": 4,
+      "streamdetails": null,
+      "media_item": {
+        "item_id": "5",
+        "provider": "library",
+        "name": "Slow Orbit",
+        "media_type": "track",
+        "uri": "library://track/5",
+        "duration": 201,
+        "artists": [
+          {
+            "item_id": "100",
+            "provider": "library",
+            "name": "Kestrel Avenue",
+            "media_type": "artist",
+            "uri": "library://artist/100"
+          }
+        ],
+        "album": {
+          "item_id": "a5",
+          "provider": "library",
+          "name": "Satellites",
+          "media_type": "album",
+          "uri": "library://album/a5"
+        }
+      },
+      "image": {
+        "type": "thumb",
+        "path": "https://covers.example/Satellites.jpg",
+        "provider": "mock",
+        "remotely_accessible": false,
+        "proxy_id": "8f1d73352c73f9039df187cbc5e739e8cba2ff36d1e244a5df56d30689a1e5f6"
+      },
+      "index": 0,
+      "available": true
+    },
+    "flow_mode": false,
+    "resume_pos": 0,
+    "is_dynamic": false,
+    "extra_attributes": {}
+  },
+  {
+    "queue_id": "kitchen",
+    "active": true,
+    "display_name": "Kitchen",
+    "available": true,
+    "items": 12,
+    "shuffle_enabled": false,
+    "repeat_mode": "off",
+    "crossfade_enabled": false,
+    "autoplay_enabled": false,
+    "current_index": 0,
+    "index_in_buffer": 0,
+    "ended": false,
+    "elapsed_time": 95.0,
+    "elapsed_time_last_updated": 1791288000.426375,
+    "playback_speed": 1.0,
+    "state": "paused",
+    "current_item": {
+      "queue_id": "kitchen",
+      "queue_item_id": "178207f0dd55d94c2812a578453e1a88",
+      "name": "Ada North - Hollow Pines",
+      "duration": 256,
+      "sort_index": 0,
+      "streamdetails": null,
+      "media_item": {
+        "item_id": "6",
+        "provider": "library",
+        "name": "Hollow Pines",
+        "media_type": "track",
+        "uri": "library://track/6",
+        "duration": 256,
+        "artists": [
+          {
+            "item_id": "100",
+            "provider": "library",
+            "name": "Ada North",
+            "media_type": "artist",
+            "uri": "library://artist/100"
+          }
+        ],
+        "album": {
+          "item_id": "a6",
+          "provider": "library",
+          "name": "Winter Bloom",
+          "media_type": "album",
+          "uri": "library://album/a6"
+        }
+      },
+      "image": {
+        "type": "thumb",
+        "path": "https://covers.example/Winter_Bloom.jpg",
+        "provider": "mock",
+        "remotely_accessible": false,
+        "proxy_id": "5b4b62b96404ad169d055a4a763e05c1ac94b1222c1f3e8a007f5750c3151a4c"
+      },
+      "index": 0,
+      "available": true
+    },
+    "next_item": {
+      "queue_id": "kitchen",
+      "queue_item_id": "7ba6383a1b4061f3e4c3e7c4d0e03d38",
+      "name": "The Quiet Engines - Small Hours",
+      "duration": 198,
+      "sort_index": 1,
+      "streamdetails": null,
+      "media_item": {
+        "item_id": "7",
+        "provider": "library",
+        "name": "Small Hours",
+        "media_type": "track",
+        "uri": "library://track/7",
+        "duration": 198,
+        "artists": [
+          {
+            "item_id": "100",
+            "provider": "library",
+            "name": "The Quiet Engines",
+            "media_type": "artist",
+            "uri": "library://artist/100"
+          }
+        ],
+        "album": {
+          "item_id": "a7",
+          "provider": "library",
+          "name": "Field Recordings",
+          "media_type": "album",
+          "uri": "library://album/a7"
+        }
+      },
+      "image": {
+        "type": "thumb",
+        "path": "https://covers.example/Field_Recordings.jpg",
+        "provider": "mock",
+        "remotely_accessible": false,
+        "proxy_id": "f2609f3100f2ab1627defae8921305543b54505a5cfd7effd8e785ebfba2f5d0"
+      },
+      "index": 0,
+      "available": true
+    },
+    "flow_mode": false,
+    "resume_pos": 0,
+    "is_dynamic": false,
+    "extra_attributes": {}
+  },
+  {
+    "queue_id": "bedroom",
+    "active": false,
+    "display_name": "Bedroom",
+    "available": true,
+    "items": 0,
+    "shuffle_enabled": false,
+    "repeat_mode": "off",
+    "crossfade_enabled": false,
+    "autoplay_enabled": false,
+    "current_index": null,
+    "index_in_buffer": null,
+    "ended": false,
+    "elapsed_time": 0.0,
+    "elapsed_time_last_updated": 1791288000.426378,
+    "playback_speed": 1.0,
+    "state": "idle",
+    "current_item": null,
+    "next_item": null,
+    "flow_mode": false,
+    "resume_pos": 0,
+    "is_dynamic": false,
+    "extra_attributes": {}
+  },
+  {
+    "queue_id": "office",
+    "active": false,
+    "display_name": "Office",
+    "available": false,
+    "items": 4,
+    "shuffle_enabled": false,
+    "repeat_mode": "off",
+    "crossfade_enabled": false,
+    "autoplay_enabled": false,
+    "current_index": 0,
+    "index_in_buffer": 0,
+    "ended": false,
+    "elapsed_time": 0.0,
+    "elapsed_time_last_updated": 1791288000.4264104,
+    "playback_speed": 1.0,
+    "state": "idle",
+    "current_item": {
+      "queue_id": "office",
+      "queue_item_id": "4f282a5fe55debcdd5a908d151a42281",
+      "name": "The Quiet Engines - Copper Sky",
+      "duration": 243,
+      "sort_index": 0,
+      "streamdetails": null,
+      "media_item": {
+        "item_id": "3",
+        "provider": "library",
+        "name": "Copper Sky",
+        "media_type": "track",
+        "uri": "library://track/3",
+        "duration": 243,
+        "artists": [
+          {
+            "item_id": "100",
+            "provider": "library",
+            "name": "The Quiet Engines",
+            "media_type": "artist",
+            "uri": "library://artist/100"
+          }
+        ],
+        "album": {
+          "item_id": "a3",
+          "provider": "library",
+          "name": "Field Recordings",
+          "media_type": "album",
+          "uri": "library://album/a3"
+        }
+      },
+      "image": {
+        "type": "thumb",
+        "path": "https://covers.example/Field_Recordings.jpg",
+        "provider": "mock",
+        "remotely_accessible": false,
+        "proxy_id": "f2609f3100f2ab1627defae8921305543b54505a5cfd7effd8e785ebfba2f5d0"
+      },
+      "index": 0,
+      "available": true
+    },
+    "next_item": {
+      "queue_id": "office",
+      "queue_item_id": "0d3921b279057ba8fb973294b4615bb7",
+      "name": "Lumen & Vale - Night Ferry",
+      "duration": 229,
+      "sort_index": 1,
+      "streamdetails": null,
+      "media_item": {
+        "item_id": "4",
+        "provider": "library",
+        "name": "Night Ferry",
+        "media_type": "track",
+        "uri": "library://track/4",
+        "duration": 229,
+        "artists": [
+          {
+            "item_id": "100",
+            "provider": "library",
+            "name": "Lumen & Vale",
+            "media_type": "artist",
+            "uri": "library://artist/100"
+          }
+        ],
+        "album": {
+          "item_id": "a4",
+          "provider": "library",
+          "name": "Night Ferry",
+          "media_type": "album",
+          "uri": "library://album/a4"
+        }
+      },
+      "image": {
+        "type": "thumb",
+        "path": "https://covers.example/Night_Ferry.jpg",
+        "provider": "mock",
+        "remotely_accessible": false,
+        "proxy_id": "c5ac9a9fe4859cef4c8850f73969070ae31884bd69edeb0c8a58ea5e68761c57"
+      },
+      "index": 0,
+      "available": true
+    },
+    "flow_mode": false,
+    "resume_pos": 0,
+    "is_dynamic": false,
+    "extra_attributes": {}
+  }
+]

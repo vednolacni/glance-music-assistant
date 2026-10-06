@@ -1,0 +1,33 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    env:
+      GLANCE_VERSION: v0.8.6
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies and Chromium
+        run: |
+          pip install aiohttp pillow playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Install Glance
+        run: |
+          curl -sSL "https://github.com/glanceapp/glance/releases/download/${GLANCE_VERSION}/glance-linux-amd64.tar.gz" | tar xz -C "$RUNNER_TEMP"
+          echo "GLANCE_BIN=$RUNNER_TEMP/glance" >> "$GITHUB_ENV"
+
+      - name: README matches the widget
+        run: python dev/sync_readme.py --check
+
+      - name: Browser tests
+        run: python dev/test_e2e.py

@@ -1,0 +1,166 @@
+[
+  {
+    "queue_id": "living_room",
+    "queue_item_id": "8934dee014a91632665dc083122af565",
+    "name": "Kestrel Avenue - Slow Orbit",
+    "duration": 201,
+    "sort_index": 4,
+    "streamdetails": null,
+    "media_item": {
+      "item_id": "5",
+      "provider": "library",
+      "name": "Slow Orbit",
+      "media_type": "track",
+      "uri": "library://track/5",
+      "duration": 201,
+      "artists": [
+        {
+          "item_id": "100",
+          "provider": "library",
+          "name": "Kestrel Avenue",
+          "media_type": "artist",
+          "uri": "library://artist/100"
+        }
+      ],
+      "album": {
+        "item_id": "a5",
+        "provider": "library",
+        "name": "Satellites",
+        "media_type": "album",
+        "uri": "library://album/a5"
+      }
+    },
+    "image": {
+      "type": "thumb",
+      "path": "https://covers.example/Satellites.jpg",
+      "provider": "mock",
+      "remotely_accessible": false,
+      "proxy_id": "8f1d73352c73f9039df187cbc5e739e8cba2ff36d1e244a5df56d30689a1e5f6"
+    },
+    "index": 0,
+    "available": true
+  },
+  {
+    "queue_id": "living_room",
+    "queue_item_id": "13337c34eb12cc9f2568ebe654472153",
+    "name": "Ada North - Hollow Pines",
+    "duration": 256,
+    "sort_index": 5,
+    "streamdetails": null,
+    "media_item": {
+      "item_id": "6",
+      "provider": "library",
+      "name": "Hollow Pines",
+      "media_type": "track",
+      "uri": "library://track/6",
+      "duration": 256,
+      "artists": [
+        {
+          "item_id": "100",
+          "provider": "library",
+          "name": "Ada North",
+          "media_type": "artist",
+          "uri": "library://artist/100"
+        }
+      ],
+      "album": {
+        "item_id": "a6",
+        "provider": "library",
+        "name": "Winter Bloom",
+        "media_type": "album",
+        "uri": "library://album/a6"
+      }
+    },
+    "image": {
+      "type": "thumb",
+      "path": "https://covers.example/Winter_Bloom.jpg",
+      "provider": "mock",
+      "remotely_accessible": false,
+      "proxy_id": "5b4b62b96404ad169d055a4a763e05c1ac94b1222c1f3e8a007f5750c3151a4c"
+    },
+    "index": 0,
+    "available": true
+  },
+  {
+    "queue_id": "living_room",
+    "queue_item_id": "95ff7c1797d74659b8f4542a1f46dbc0",
+    "name": "The Quiet Engines - Small Hours",
+    "duration": 198,
+    "sort_index": 6,
+    "streamdetails": null,
+    "media_item": {
+      "item_id": "7",
+      "provider": "library",
+      "name": "Small Hours",
+      "media_type": "track",
+      "uri": "library://track/7",
+      "duration": 198,
+      "artists": [
+        {
+          "item_id": "100",
+          "provider": "library",
+          "name": "The Quiet Engines",
+          "media_type": "artist",
+          "uri": "library://artist/100"
+        }
+      ],
+      "album": {
+        "item_id": "a7",
+        "provider": "library",
+        "name": "Field Recordings",
+        "media_type": "album",
+        "uri": "library://album/a7"
+      }
+    },
+    "image": {
+      "type": "thumb",
+      "path": "https://covers.example/Field_Recordings.jpg",
+      "provider": "mock",
+      "remotely_accessible": false,
+      "proxy_id": "f2609f3100f2ab1627defae8921305543b54505a5cfd7effd8e785ebfba2f5d0"
+    },
+    "index": 0,
+    "available": true
+  },
+  {
+    "queue_id": "living_room",
+    "queue_item_id": "a8657a637ded39f3b5da1707d84313fe",
+    "name": "Neon Harbor - Afterglow Street",
+    "duration": 236,
+    "sort_index": 7,
+    "streamdetails": null,
+    "media_item": {
+      "item_id": "8",
+      "provider": "library",
+      "name": "Afterglow Street",
+      "media_type": "track",
+      "uri": "library://track/8",
+      "duration": 236,
+      "artists": [
+        {
+          "item_id": "100",
+          "provider": "library",
+          "name": "Neon Harbor",
+          "media_type": "artist",
+          "uri": "library://artist/100"
+        }
+      ],
+      "album": {
+        "item_id": "a8",
+        "provider": "library",
+        "name": "Afterglow Street",
+        "media_type": "album",
+        "uri": "library://album/a8"
+      }
+    },
+    "image": {
+      "type": "thumb",
+      "path": "https://covers.example/Afterglow_Street.jpg",
+      "provider": "mock",
+      "remotely_accessible": false,
+      "proxy_id": "7e91d56d6f5da17631bdc44756a155dcf200fb20bc09a1f6a2bf69266b917200"
+    },
+    "index": 0,
+    "available": true
+  }
+]

@@ -1,0 +1,6 @@
+# local dev output
+dev/glance.generated.yml
+dev/page*.png
+__pycache__/
+*.pyc
+.venv/
